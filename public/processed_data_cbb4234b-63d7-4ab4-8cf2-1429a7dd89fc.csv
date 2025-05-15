@@ -1,0 +1,63 @@
+url,data
+https://www.woolworths.com.au/shop/productdetails/141410/mandarin-imperial,```json
+{
+    "products": [
+        {
+            "name": "ar-header-notification-amend",
+            "details": {
+                "notification-container": {
+                    "display": "flex",
+                    "justify-content": "space-between",
+                    "padding": "16px"
+                },
+                "warning": {
+                    "background-color": "#fffbe5",
+                    "border": "solid 1px #e5c300",
+                    "border-left-width": "8px"
+                },
+                "action": {
+                    "color": "#ac5900"
+                },
+                "content-container": {
+                    "background-color": "#fff"
+                },
+                "text-container": {
+                    "display": "block",
+                    "flex-grow": 2,
+                    "min-width": "0%"
+                },
+                "title": {
+                    "font-family": "var(--font-family-fresh-sans)",
+                    "font-weight": "var(--font-weight-medium)",
+                    "font-size": "16px",
+                    "line-height": "20px",
+                    "margin-bottom": "0"
+                }
+            }
+        },
+        {
+            "name": "ar-header-notification-cutoff",
+            "details": {
+                "notification-container": {
+                    "display": "flex",
+                    "justify-content": "space-between",
+                    "padding": "16px"
+                },
+                "error": {
+                    "background-color": "#fde8e9",
+                    "border": "solid 1px #bd161c",
+                    "border-left-width": "8px"
+                },
+                "action": {
+                    "color": "#bd161c"
+                },
+                "content-container": {
+                    "background-color": "#fff"
+                },
+                "text-container": {
+                    "display": "block",
+                    "flex-grow": 2,
+                    "min-width": "0%"
+                },
+                "title": {
+                    "font-family": "var(--font-family-f

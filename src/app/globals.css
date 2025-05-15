@@ -1,27 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🌐 全局 CSS 变量 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-light: #ffffff;
+  --background-dark: #0a0a0a;
+  --foreground-light: #171717;
+  --foreground-dark: #ededed;
+  --primary: #4F46E5;
+  --accent: #00C896;
+  --text-primary: #ffffff;
+  --text-secondary: #A0AEC0;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --transition-speed: 0.3s;
 }
 
+/* 🌙 Dark Mode 支持 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
   }
 }
 
-html,
-body {
+html, body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background, #000);
+  color: var(--foreground, #ffffff);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
   max-width: 100vw;
   overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  transition: background var(--transition-speed), color var(--transition-speed);
 }
 
 * {
@@ -31,12 +44,93 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--primary);
   text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+/* ✨ 按钮样式 */
+button {
+  cursor: pointer;
+  background: var(--primary);
+  color: var(--text-primary);
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  transition: background var(--transition-speed), transform 0.2s;
+}
+
+button:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌐 输入框样式 */
+input,
+textarea {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  width: 100%;
+  transition: border var(--transition-speed), background var(--transition-speed);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+/* 🌐 背景视频层 - 确保它在最底层 */
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -10;
+  pointer-events: none;
+}
+
+html, body {
+  background: transparent !important;
+  overflow: hidden;
+}
+
+
+/* 确保背景和前景颜色都定义 */
+:root {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+  :root {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
   }
+}
+
+
+/* 🌐 卡片样式 */
+.card {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
