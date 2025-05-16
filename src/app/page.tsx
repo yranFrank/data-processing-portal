@@ -20,21 +20,21 @@ const handleSubmit = async (e: React.FormEvent) => {
   setHeaders([]);
 
   try {
-    // ✅ 如果 fields 为空，自动设置为 "name, price"
+    // if input empty set as name and price
     let fieldsToSend = fields.trim() === "" ? "name, price" : fields.trim();
 
-    // ✅ 检查用户是否输入了 "description" 字段
+    // check for "description" input
     if (fieldsToSend.toLowerCase().includes("description")) {
       alert(
         "Please enter a specific information needed, such as category, origin, washing instructions, etc."
       );
-      return; // ✅ 阻止继续处理，直到用户输入更具体的信息
+      return; 
     }
 
     const response = await axios.post("/api/process", { urls, fields: fieldsToSend });
     const { csvData, headers: csvHeaders, rows } = response.data;
 
-    // ✅ Store CSV data for preview
+    //  Store CSV data for preview
     setHeaders(csvHeaders);
     setCsvData(rows);
     setResultUrl(csvData);
@@ -47,7 +47,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 
 
-// ✅ Function to trigger CSV download
+//  Function to trigger CSV download
 const downloadCsv = () => {
   if (resultUrl) {
     const blob = new Blob([resultUrl], { type: "text/csv" });
@@ -63,7 +63,7 @@ const downloadCsv = () => {
 
 
 
-  // ✅ CSV Parsing Function (Enhanced)
+  //  CSV Parsing Function (Enhanced)
   const parseCSV = (csvText: string) => {
     const rows = csvText.split("\n").filter((row) => row.trim().length > 0);
 

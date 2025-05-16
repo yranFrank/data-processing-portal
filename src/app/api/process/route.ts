@@ -3,21 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { OpenAI } from "openai";
 
-// ✅ 确保环境变量被正确读取
+
 const apiKey = process.env.OPENAI_API_KEY || "";
 if (!apiKey) {
-  console.error("❌ OPENAI_API_KEY is missing or empty.");
+  console.error(" OPENAI_API_KEY is missing or empty.");
   throw new Error("The OPENAI_API_KEY environment variable is missing or empty.");
 }
 
-// ✅ 配置 OpenAI API
+//  OpenAI API
 const openai = new OpenAI({ apiKey });
 
 export async function POST(req: NextRequest) {
   try {
     const { urls, fields } = await req.json();
     if (!urls) {
-      console.error("❌ Missing required fields: urls.");
+      console.error(" Missing required fields: urls.");
       return NextResponse.json({ error: "Missing required fields: urls." }, { status: 400 });
     }
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       : ["Product Name", "Price", "Description"];
 
     if (requestedFields.length === 0) {
-      console.error("❌ Invalid fields format.");
+      console.error("Invalid fields format.");
       return NextResponse.json({ error: "Invalid fields format." }, { status: 400 });
     }
 
@@ -40,18 +40,18 @@ export async function POST(req: NextRequest) {
       let errorMsg = "";
 
       try {
-        console.log(`🌐 Fetching URL: ${url}`);
+        console.log(` Fetching URL: ${url}`);
         let htmlContent = await fetchWithRetry(url);
 
         if (isBlockedPage(htmlContent)) {
-          console.warn("⚠️ Detected anti-scraping, attempting bypass...");
+          console.warn("Detected anti-scraping, attempting bypass...");
           htmlContent = await fetchWithBypass(url);
         }
 
         const extractedResult = await extractWithGPT(htmlContent, requestedFields);
         result = { ...extractedResult };
       } catch (err: any) {
-        errorMsg = `❌ Error: ${err.message}`;
+        errorMsg = ` Error: ${err.message}`;
       }
 
       extractedData.push({
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ✅ Generate CSV directly in-memory
+    //  Generate CSV directly in-memory
     const headers = Array.from(new Set(["url", ...extractedData.flatMap(Object.keys)]));
     const csvContent = [
       headers.join(","),
@@ -70,20 +70,20 @@ export async function POST(req: NextRequest) {
       )
     ].join("\n");
 
-    // ✅ Return CSV text in the response
+    //  Return CSV text in the response
     return NextResponse.json({
       csvData: csvContent,
       headers,
       rows: extractedData,
     });
   } catch (err: any) {
-    console.error(`❌ Unexpected error: ${err.message}`);
+    console.error(`Unexpected error: ${err.message}`);
     return NextResponse.json({ error: `Unexpected error: ${err.message}` }, { status: 500 });
   }
 }
 
 
-// ✅ 自动重试请求最多三次
+//  3 attempt
 async function fetchWithRetry(url: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -99,24 +99,24 @@ async function fetchWithRetry(url: string, retries = 3): Promise<string> {
       });
       return data;
     } catch (error: any) {
-      console.error(`❌ Fetch failed (attempt ${attempt}): ${error.message}`);
+      console.error(` Fetch failed (attempt ${attempt}): ${error.message}`);
       if (attempt === retries) {
-        throw new Error(`❌ All ${retries} fetch attempts failed.`);
+        throw new Error(` All ${retries} fetch attempts failed.`);
       }
       await delay(1000 + Math.random() * 2000);
     }
   }
-  throw new Error(`❌ Failed to fetch URL after ${retries} attempts.`);
+  throw new Error(` Failed to fetch URL after ${retries} attempts.`);
 }
 
-// ✅ 检查是否为防爬页面
+// check for anti scrap
 function isBlockedPage(htmlContent: string): boolean {
   return htmlContent.includes("Pardon Our Interruption") || 
          htmlContent.includes("Access Denied") || 
          htmlContent.includes("Your access has been blocked");
 }
 
-// ✅ GPT 数据提取
+// gpt data read
 async function extractWithGPT(htmlContent: string, fields: string[]): Promise<Record<string, string>> {
   const cleanText = htmlContent.replace(/\s+/g, " ").slice(0, 8000);
   const fieldsList = fields.join(", ");
@@ -144,7 +144,7 @@ ${cleanText}
   return JSON.parse(extractJSON(rawText));
 }
 
-// ✅ 自动检测并修复 GPT 返回的 JSON 格式
+// auto detect and fix gpt return
 function extractJSON(rawText: string) {
   const jsonRegex = /{[\s\S]*}/;
   const match = rawText.match(jsonRegex);
@@ -154,7 +154,7 @@ function extractJSON(rawText: string) {
   throw new Error("无效的 JSON 响应");
 }
 
-// 🌐 随机 IP 和 User-Agent
+// random ip and user
 function generateRandomIP() {
   return `${randomInt(1, 255)}.${randomInt(1, 255)}.${randomInt(1, 255)}.${randomInt(1, 255)}`;
 }
