@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { OpenAI } from "openai";
@@ -35,7 +36,8 @@ export async function POST(req: NextRequest) {
     }
 
     const urlList = urls.split("\n").filter((url: string) => url.trim().length > 0);
-    let extractedData: any[] = [];
+    const extractedData: any[] = [];
+
 
     for (const url of urlList) {
       let result: Record<string, any> = {};
