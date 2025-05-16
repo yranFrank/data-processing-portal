@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
 
 
 // ✅ 自动重试请求最多三次
+// ✅ 自动重试请求最多三次
 async function fetchWithRetry(url: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -105,11 +106,17 @@ async function fetchWithRetry(url: string, retries = 3): Promise<string> {
       return data;
     } catch (error: any) {
       console.error(`❌ Fetch failed (attempt ${attempt}): ${error.message}`);
-      if (attempt === retries) throw error;
+      if (attempt === retries) {
+        throw new Error(`❌ All ${retries} fetch attempts failed.`);
+      }
       await delay(1000 + Math.random() * 2000);
     }
   }
+
+  // ✅ Ensuring a fallback return (never reached if retry works)
+  throw new Error(`❌ Failed to fetch URL after ${retries} attempts.`);
 }
+
 
 // 🌐 绕过防爬机制
 async function fetchWithBypass(url: string): Promise<string> {
