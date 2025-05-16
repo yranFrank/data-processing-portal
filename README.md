@@ -1,8 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# 🌐 Data Processing Portal
 
-First, run the development server:
+This is a [Next.js](https://nextjs.org) project designed to efficiently extract and process data from multiple URLs with customizable field selection. The project is built with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## 🚀 Getting Started
+
+First, clone the repository:
+
+```bash
+git clone https://github.com/your-username/data-processing-portal.git
+cd data-processing-portal
+```
+
+### Install Dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Run the Development Server:
 
 ```bash
 npm run dev
@@ -10,27 +30,99 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📌 Supported Websites
 
-To learn more about Next.js, take a look at the following resources:
+- ✅ Coles
+- ✅ Target
+- ✅ Kmart
+- ⚠️ Woolworths (Price not accessible)
+- ✅ IKEA
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ✨ Features
 
-## Deploy on Vercel
+- 🌐 Multi-URL Processing: Extract data from multiple URLs in one go.
+- 💡 Customizable Fields: Specify the data fields you want to extract (e.g., name, price, description).
+- 📊 CSV Export: Download processed data as a CSV file.
+- 📌 Real-time Preview: View extracted data before downloading.
+- 🔒 Secure Processing: Data processed directly in the browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 How It Works
+
+- Enter one or more URLs (one per line).
+- Specify the data fields you want (e.g., `name, price, description`).
+- Click the "🚀 Start Processing" button.
+- View the extracted data in the preview section.
+- Click 📥 "Download Processed CSV" to save the results.
+
+---
+
+## 🌐 Deployment
+
+### Deploying on Vercel
+
+The easiest way to deploy this project is to use [Vercel Platform](https://vercel.com/):
+
+1. Connect your GitHub repository to Vercel.
+2. Set your `OPENAI_API_KEY` in the Vercel environment settings.
+3. Deploy the `main` branch.
+
+### Custom Domain Setup (Optional)
+
+- Add your custom domain in the Vercel dashboard.
+- Update your DNS settings to point to Vercel.
+
+---
+
+## 🛠 Project Structure
+
+```bash
+src/app/
+├── api/process/route.ts   # API route for processing URLs
+├── page.tsx               # Main user interface
+├── layout.tsx             # Layout component with background video
+├── globals.css            # Global styling
+public/
+├── background.mp4         # Background video
+├── favicon.ico            # Site favicon
+```
+
+---
+
+## ⚠️ Known Issues
+
+- Woolworths: Prices may not be accessible.
+- If the user requests vague fields (e.g., "description"), the app will prompt for more specific information.
+
+---
+
+## 📌 Future Improvements
+
+- Add support for more websites.
+- Enhance data extraction accuracy with fine-tuned OpenAI models.
+- Add user authentication for advanced features.
+
+---
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
+
+---
+
+## ✨ Contributors
+
+- **Frank Ran** - [GitHub Profile](https://github.com/yranFrank)
+
+Feel free to contribute and improve this project. 🙂
