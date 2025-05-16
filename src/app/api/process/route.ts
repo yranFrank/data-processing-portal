@@ -174,7 +174,7 @@ ${cleanText}
 
 // ✅ 自动检测并修复 GPT 返回的 JSON 格式
 function extractJSON(rawText: string) {
-  const jsonRegex = /{.*}/s;
+  const jsonRegex = /{[\s\S]*}/; // ✅ This works without the /s flag
   const match = rawText.match(jsonRegex);
   if (match) {
     return match[0];
