@@ -2,8 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { OpenAI } from "openai";
-import * as fs from "fs";
-import path from "path";
 
 // ✅ 确保环境变量被正确读取
 const apiKey = process.env.OPENAI_API_KEY || "";
@@ -23,7 +21,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields: urls." }, { status: 400 });
     }
 
-    // ✅ 解析 fields（支持字符串和数组）
     const requestedFields = Array.isArray(fields)
       ? fields
       : typeof fields === "string"
@@ -38,7 +35,6 @@ export async function POST(req: NextRequest) {
     const urlList = urls.split("\n").filter((url: string) => url.trim().length > 0);
     const extractedData: any[] = [];
 
-
     for (const url of urlList) {
       let result: Record<string, any> = {};
       let errorMsg = "";
@@ -52,8 +48,6 @@ export async function POST(req: NextRequest) {
           htmlContent = await fetchWithBypass(url);
         }
 
-        // ✅ 使用 GPT 分析并提取数据
-        console.log("🔍 使用 GPT 分析页面...");
         const extractedResult = await extractWithGPT(htmlContent, requestedFields);
         result = { ...extractedResult };
       } catch (err: any) {
@@ -63,11 +57,11 @@ export async function POST(req: NextRequest) {
       extractedData.push({
         url,
         ...result,
-        ...(errorMsg ? { error: errorMsg } : {}), // ✅ 仅在有错误时添加 error 字段
+        ...(errorMsg ? { error: errorMsg } : {}),
       });
     }
 
-    // ✅ 确保 CSV 包含所有用户请求的字段 + url
+    // ✅ Generate CSV directly in-memory
     const headers = Array.from(new Set(["url", ...extractedData.flatMap(Object.keys)]));
     const csvContent = [
       headers.join(","),
@@ -76,17 +70,20 @@ export async function POST(req: NextRequest) {
       )
     ].join("\n");
 
-    const csvFilePath = path.join(process.cwd(), "public", "processed_data.csv");
-    fs.writeFileSync(csvFilePath, '\uFEFF' + csvContent, { encoding: "utf8" });
-    console.log("✅ CSV file successfully created.");
-
-    return NextResponse.json({ downloadUrl: "/processed_data.csv" });
+    // ✅ Return CSV text in the response
+    return NextResponse.json({
+      csvData: csvContent,
+      headers,
+      rows: extractedData,
+    });
   } catch (err: any) {
     console.error(`❌ Unexpected error: ${err.message}`);
     return NextResponse.json({ error: `Unexpected error: ${err.message}` }, { status: 500 });
   }
 }
 
+
+// ✅ 自动重试请求最多三次
 async function fetchWithRetry(url: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -109,23 +106,7 @@ async function fetchWithRetry(url: string, retries = 3): Promise<string> {
       await delay(1000 + Math.random() * 2000);
     }
   }
-
-  // ✅ Ensuring a fallback return (never reached if retry works)
   throw new Error(`❌ Failed to fetch URL after ${retries} attempts.`);
-}
-
-
-// 🌐 绕过防爬机制
-async function fetchWithBypass(url: string): Promise<string> {
-  const { data } = await axios.get(url, {
-    headers: {
-      "User-Agent": generateRandomUserAgent(),
-      "Referer": "https://www.google.com/",
-      "X-Forwarded-For": generateRandomIP(),
-    },
-    timeout: 15000,
-  });
-  return data;
 }
 
 // ✅ 检查是否为防爬页面
@@ -154,27 +135,18 @@ ${cleanText}
     max_tokens: 500,
   });
 
-  // ✅ Safely accessing GPT response
   const rawText = response.choices?.[0]?.message?.content?.trim();
   if (!rawText) {
-    console.error("❌ GPT returned an empty or invalid response.");
     throw new Error("GPT returned an empty response.");
   }
 
   console.log("🌐 GPT 返回内容:", rawText);
-
-  try {
-    return JSON.parse(extractJSON(rawText));
-  } catch (err) {
-    console.error("❌ Failed to parse GPT response:", err);
-    throw new Error("Failed to parse GPT response. Please check the response format.");
-  }
+  return JSON.parse(extractJSON(rawText));
 }
-
 
 // ✅ 自动检测并修复 GPT 返回的 JSON 格式
 function extractJSON(rawText: string) {
-  const jsonRegex = /{[\s\S]*}/; // ✅ This works without the /s flag
+  const jsonRegex = /{[\s\S]*}/;
   const match = rawText.match(jsonRegex);
   if (match) {
     return match[0];
