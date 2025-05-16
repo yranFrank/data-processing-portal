@@ -12,7 +12,7 @@ export default function Home() {
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setLoading(true);
   setResultUrl("");
@@ -20,7 +20,18 @@ export default function Home() {
   setHeaders([]);
 
   try {
-    const response = await axios.post("/api/process", { urls, fields });
+    // ✅ 如果 fields 为空，自动设置为 "name, price"
+    let fieldsToSend = fields.trim() === "" ? "name, price" : fields.trim();
+
+    // ✅ 检查用户是否输入了 "description" 字段
+    if (fieldsToSend.toLowerCase().includes("description")) {
+      alert(
+        "Please enter a specific information needed, such as category, origin, washing instructions, etc."
+      );
+      return; // ✅ 阻止继续处理，直到用户输入更具体的信息
+    }
+
+    const response = await axios.post("/api/process", { urls, fields: fieldsToSend });
     const { csvData, headers: csvHeaders, rows } = response.data;
 
     // ✅ Store CSV data for preview
@@ -34,6 +45,7 @@ export default function Home() {
     setLoading(false);
   }
 };
+
 
 // ✅ Function to trigger CSV download
 const downloadCsv = () => {
@@ -70,6 +82,44 @@ const downloadCsv = () => {
   };
 
   return (
+    <div>
+    {/* Supported Websites List */}
+    <motion.div 
+      className="fixed top-4 right-4 bg-grey bg-opacity-90 text-grey p-3 rounded-lg shadow-lg max-w-xs z-20"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <h3 className="font-bold mb-2">Supported Websites:</h3>
+      <ul className="text-sm list-disc list-inside space-y-1">
+        <li>✅ Coles</li>
+        <li>✅ Target</li>
+        <li>✅ Kmart</li>
+        <li>⚠️ Woolworths (Price not accessible)</li>
+        <li>✅ IKEA</li>
+      </ul>
+    </motion.div>
+
+    {/* Status Indicator */}
+    <motion.div 
+      className="fixed top-4 right-4 bg-black bg-opacity-80 text-white p-3 rounded-lg shadow-lg flex items-center space-x-2 z-20"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {loading ? (
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full bg-blue-400 animate-ping"></div>
+          <span>Processing...</span>
+        </div>
+      ) : (
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          <span>Ready</span>
+        </div>
+      )}
+    </motion.div>
+
 <main className="relative min-h-screen flex items-center justify-center bg-gray-900">
   <video
     className="absolute inset-0 w-full h-full object-cover -z-1"
@@ -172,5 +222,6 @@ const downloadCsv = () => {
     )}
   </motion.div>
 </main>
+ </div>
   );
 }
