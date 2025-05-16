@@ -70,20 +70,17 @@ const downloadCsv = () => {
   };
 
   return (
-  <main className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-900">
-  <motion.video
-    className="absolute inset-0 w-full h-full object-cover -z-10 opacity-0"
+<main className="relative min-h-screen flex items-center justify-center bg-gray-900">
+  <video
+    className="absolute inset-0 w-full h-full object-cover -z-1"
     autoPlay
     muted
     loop
     playsInline
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 1.5 }}
   >
     <source src="/background.mp4" type="video/mp4" />
     Your browser does not support the video tag.
-  </motion.video>
+  </video>
 
   <motion.div 
     className="relative bg-black bg-opacity-70 p-8 rounded-3xl shadow-2xl max-w-3xl space-y-6 text-white backdrop-blur-md z-10"
