@@ -24,6 +24,16 @@ yarn install
 # or
 pnpm install
 ```
+### Configure Environment Variables:
+
+Create a .env.local file in the root directory.
+
+Add your OpenAI API Key:
+
+```bash
+OPENAI_API_KEY=your-openai-api-key
+
+```
 
 ### Run the Development Server:
 
