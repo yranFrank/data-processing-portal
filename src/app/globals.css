@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 🌐 全局 CSS 变量 */
+/* css */
 :root {
   --background-light: #ffffff;
   --background-dark: #0a0a0a;
@@ -16,7 +16,7 @@
   --transition-speed: 0.3s;
 }
 
-/* 🌙 Dark Mode 支持 */
+/*  Dark Mode  */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: var(--background-dark);
@@ -53,7 +53,7 @@ a:hover {
   color: var(--accent);
 }
 
-/* ✨ 按钮样式 */
+/* botton */
 button {
   cursor: pointer;
   background: var(--primary);
@@ -70,7 +70,7 @@ button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 🌐 输入框样式 */
+
 input,
 textarea {
   background-color: rgba(255, 255, 255, 0.1);
@@ -94,7 +94,7 @@ input::placeholder,
 textarea::placeholder {
   color: var(--text-secondary);
 }
-/* 🌐 背景视频层 - 确保它在最底层 */
+/* video ensure at button */
 .background-video {
   position: absolute;
   top: 0;
@@ -112,7 +112,7 @@ html, body {
 }
 
 
-/* 确保背景和前景颜色都定义 */
+
 :root {
   --background: var(--background-light);
   --foreground: var(--foreground-light);
@@ -126,7 +126,7 @@ html, body {
 }
 
 
-/* 🌐 卡片样式 */
+
 .card {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
