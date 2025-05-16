@@ -87,9 +87,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
-// ✅ 自动重试请求最多三次
-// ✅ 自动重试请求最多三次
 async function fetchWithRetry(url: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -139,7 +136,7 @@ function isBlockedPage(htmlContent: string): boolean {
 }
 
 // ✅ GPT 数据提取
-async function extractWithGPT(htmlContent: string, fields: string[]) {
+async function extractWithGPT(htmlContent: string, fields: string[]): Promise<Record<string, string>> {
   const cleanText = htmlContent.replace(/\s+/g, " ").slice(0, 8000);
   const fieldsList = fields.join(", ");
 
@@ -157,10 +154,23 @@ ${cleanText}
     max_tokens: 500,
   });
 
-  const rawText = response.choices[0]?.message?.content.trim() || "";
+  // ✅ Safely accessing GPT response
+  const rawText = response.choices?.[0]?.message?.content?.trim();
+  if (!rawText) {
+    console.error("❌ GPT returned an empty or invalid response.");
+    throw new Error("GPT returned an empty response.");
+  }
+
   console.log("🌐 GPT 返回内容:", rawText);
-  return JSON.parse(extractJSON(rawText));
+
+  try {
+    return JSON.parse(extractJSON(rawText));
+  } catch (err) {
+    console.error("❌ Failed to parse GPT response:", err);
+    throw new Error("Failed to parse GPT response. Please check the response format.");
+  }
 }
+
 
 // ✅ 自动检测并修复 GPT 返回的 JSON 格式
 function extractJSON(rawText: string) {
